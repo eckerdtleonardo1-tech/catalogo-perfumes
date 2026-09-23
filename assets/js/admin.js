@@ -72,7 +72,7 @@ $("#salir").addEventListener("click", async () => {
 });
 
 $("#reiniciar-demo").addEventListener("click", async () => {
-  if (!(await confirmar("¿Reiniciar la demo?", "Se borran los cambios de este navegador y vuelven los 6 perfumes de ejemplo.", "Reiniciar"))) return;
+  if (!(await confirmar("¿Reiniciar la demo?", "Se borran los cambios de este navegador y vuelven los perfumes de ejemplo.", "Reiniciar"))) return;
   st.be.reiniciar();
   await recargar();
   toast("Demo reiniciada");

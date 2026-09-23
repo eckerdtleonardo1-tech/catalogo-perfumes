@@ -126,7 +126,9 @@ function htmlPrecio(p, unitario) {
   const ts = tamaniosDe(p);
   const min = unitario ?? precioMinimo(p);
   const variosPrecios = unitario == null && new Set(ts.map((t) => t.precio)).size > 1;
-  const anterior = Number(p.precio_anterior) > min ? `<s>${precio(p.precio_anterior)}</s>` : "";
+  // El precio anterior es del precio general: no lo mostramos junto a un "desde" ni en otro tamaño.
+  const aplica = unitario == null ? !variosPrecios : unitario === (Number(p.precio) || 0);
+  const anterior = aplica && Number(p.precio_anterior) > min ? `<s>${precio(p.precio_anterior)}</s>` : "";
   const oferta = anterior || p.etiqueta === "Oferta";
   return `<p class="precio${oferta ? " oferta" : ""}">${variosPrecios ? '<span class="desde">desde</span>' : ""}<strong>${precio(min)}</strong>${anterior}</p>`;
 }

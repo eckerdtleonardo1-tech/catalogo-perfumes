@@ -4,7 +4,7 @@
 // Si cambiás algo acá, la firma de los datos cambia y los navegadores que tenían
 // la demo guardada la recargan solos.
 
-const img = (slug) => [`/assets/img/perfumes/${slug}-1.svg`, `/assets/img/perfumes/${slug}-2.svg`];
+const img = (slug) => [`/assets/img/perfumes/${slug}.jpg`];
 
 export const SEED = {
   categorias: [
@@ -24,7 +24,27 @@ export const SEED = {
   ],
   perfumes: [
     {
-      id: 1, nombre: "Yara", marca: "Lattafa", categoria: 1, familia: 4,
+      id: 1, nombre: "Liquid Brun", marca: "French Avenue", categoria: 3, familia: 1,
+      concentracion: "EDP",
+      notas: { salida: ["Canela", "Cardamomo", "Azahar", "Bergamota"], corazon: ["Vainilla bourbon", "Praliné", "Elemí"], fondo: ["Almizcle", "Guayaco", "Ámbar"] },
+      precio: 38900, precio_anterior: null,
+      descripcion: "Cálido, especiado y envolvente. La canela y el praliné sobre un fondo de maderas y ámbar lo vuelven ideal para la noche.",
+      imagenes: img("french-avenue-liquid-brun"), tamanios: ["100 ml"], tipo: "Sellado",
+      duracion_horas: 9, estela: 4, stock: true, etiqueta: "Nuevo", destacado: true, activo: true,
+      fecha_creacion: "2026-09-15T15:00:00.000Z"
+    },
+    {
+      id: 2, nombre: "Eclaire", marca: "Lattafa", categoria: 2, familia: 4,
+      concentracion: "EDP",
+      notas: { salida: ["Caramelo", "Leche", "Azúcar"], corazon: ["Miel", "Flores blancas"], fondo: ["Vainilla", "Praliné", "Almizcle"] },
+      precio: 42900, precio_anterior: null,
+      descripcion: "Un postre en frasco: caramelo, leche y miel sobre vainilla. Dulce y cremoso. También lo tenemos en decant para probarlo.",
+      imagenes: img("lattafa-eclaire"), tamanios: ["Decant 10 ml: 9900", "100 ml: 42900"], tipo: "Sellado",
+      duracion_horas: 8, estela: 4, stock: true, etiqueta: null, destacado: true, activo: true,
+      fecha_creacion: "2026-09-05T15:00:00.000Z"
+    },
+    {
+      id: 3, nombre: "Yara", marca: "Lattafa", categoria: 2, familia: 4,
       concentracion: "EDP",
       notas: { salida: ["Orquídea", "Heliotropo", "Mandarina"], corazon: ["Acorde gourmand", "Frutas tropicales"], fondo: ["Vainilla", "Almizcle", "Sándalo"] },
       precio: 39900, precio_anterior: null,
@@ -34,17 +54,7 @@ export const SEED = {
       fecha_creacion: "2026-08-02T15:00:00.000Z"
     },
     {
-      id: 2, nombre: "Odyssey Mandarin Sky", marca: "Armaf", categoria: 1, familia: 3,
-      concentracion: "EDP",
-      notas: { salida: ["Mandarina", "Naranja amarga"], corazon: ["Caramelo", "Canela"], fondo: ["Haba tonka", "Ámbar", "Vetiver"] },
-      precio: 34900, precio_anterior: null,
-      descripcion: "Una explosión de mandarina jugosa sobre un fondo dulce de tonka. Fresco de día, envolvente de noche.",
-      imagenes: img("armaf-odyssey-mandarin-sky"), tamanios: ["100 ml"], tipo: "Sellado",
-      duracion_horas: 9, estela: 4, stock: true, etiqueta: "Nuevo", destacado: true, activo: true,
-      fecha_creacion: "2026-09-10T15:00:00.000Z"
-    },
-    {
-      id: 3, nombre: "Khamrah", marca: "Lattafa", categoria: 1, familia: 1,
+      id: 4, nombre: "Khamrah", marca: "Lattafa", categoria: 4, familia: 1,
       concentracion: "EDP",
       notas: { salida: ["Canela", "Nuez moscada", "Bergamota"], corazon: ["Dátiles", "Praliné", "Nardos"], fondo: ["Vainilla", "Haba tonka", "Benjuí"] },
       precio: 45900, precio_anterior: 52900,
@@ -54,34 +64,14 @@ export const SEED = {
       fecha_creacion: "2026-07-20T15:00:00.000Z"
     },
     {
-      id: 4, nombre: "Good Girl", marca: "Carolina Herrera", categoria: 2, familia: 2,
+      id: 5, nombre: "Ajwad", marca: "Lattafa", categoria: 4, familia: 2,
       concentracion: "EDP",
-      notas: { salida: ["Almendra", "Café"], corazon: ["Tuberosa", "Jazmín sambac"], fondo: ["Haba tonka", "Cacao"] },
-      precio: 129900, precio_anterior: null,
-      descripcion: "El icónico frasco stiletto. Luminoso y oscuro a la vez: flores blancas con un fondo de cacao y tonka.",
-      imagenes: img("carolina-herrera-good-girl"), tamanios: ["50 ml: 129900", "80 ml: 159900"], tipo: "Sellado",
+      notas: { salida: ["Pistacho", "Bergamota"], corazon: ["Rosa", "Jazmín"], fondo: ["Vainilla", "Almizcle", "Sándalo"] },
+      precio: 34900, precio_anterior: null,
+      descripcion: "Frutal y floral con un fondo suave de vainilla. Viene en su caja de colección, ideal para regalar.",
+      imagenes: img("lattafa-ajwad"), tamanios: ["60 ml"], tipo: "Sellado",
       duracion_horas: 7, estela: 3, stock: false, etiqueta: "Importado", destacado: false, activo: true,
       fecha_creacion: "2026-06-15T15:00:00.000Z"
-    },
-    {
-      id: 5, nombre: "Sauvage", marca: "Dior", categoria: 3, familia: 5,
-      concentracion: "EDT",
-      notas: { salida: ["Bergamota de Calabria", "Pimienta"], corazon: ["Lavanda", "Pimienta de Sichuán", "Geranio"], fondo: ["Ambroxan", "Cedro", "Ládano"] },
-      precio: 12900, precio_anterior: null,
-      descripcion: "Decant del original fraccionado a mano. Ideal para probarlo a fondo antes de comprar el frasco completo.",
-      imagenes: img("dior-sauvage"), tamanios: ["5 ml: 12900", "10 ml: 22900"], tipo: "Decant",
-      duracion_horas: 7, estela: 4, stock: true, etiqueta: null, destacado: false, activo: true,
-      fecha_creacion: "2026-08-25T15:00:00.000Z"
-    },
-    {
-      id: 6, nombre: "Bare Vanilla", marca: "Victoria's Secret", categoria: 5, familia: 4,
-      concentracion: null,
-      notas: { salida: ["Vainilla batida"], corazon: ["Cachemira"], fondo: ["Almizcle suave"] },
-      precio: 19900, precio_anterior: 24900,
-      descripcion: "Body splash suave y cremoso para usar todos los días y retocar en la cartera.",
-      imagenes: img("victorias-secret-bare-vanilla"), tamanios: ["250 ml"], tipo: "Sellado",
-      duracion_horas: 3, estela: 2, stock: true, etiqueta: "Oferta", destacado: false, activo: true,
-      fecha_creacion: "2026-05-30T15:00:00.000Z"
     }
   ]
 };

@@ -20,7 +20,7 @@ vercel.json             Cache de /assets en 0 mientras iterás
 
 Subí la carpeta a Vercel (o abrila con cualquier servidor estático) y entrá a:
 
-- `/` la tienda con 6 perfumes de ejemplo.
+- `/` la tienda con los perfumes de ejemplo.
 - `/admin` el panel. La contraseña de demo aparece en la pantalla de login (`demo1234`, se cambia en `config.js`).
   Lo que cargues se guarda en ese navegador. El botón **Reiniciar demo** vuelve a los 6 de ejemplo.
 
