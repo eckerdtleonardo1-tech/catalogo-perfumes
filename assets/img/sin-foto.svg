@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <rect width="800" height="1000" fill="#241B29"/>
+  <g fill="none" stroke="#C39A5B" stroke-opacity=".5" stroke-width="4">
+    <rect x="300" y="470" width="200" height="260" rx="34"/><rect x="345" y="400" width="110" height="70" rx="10"/><path d="M372 470v-12M428 470v-12"/>
+  </g>
+  <text x="400" y="800" text-anchor="middle" font-family="'Jost','Futura','Century Gothic','Segoe UI',sans-serif" font-size="22" letter-spacing="6" fill="#B3A5BB">SIN FOTO</text>
+</svg>

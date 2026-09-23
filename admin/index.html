@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Panel · santalucia.parfums</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1B1420">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@300..600&display=swap">
+  <!-- Rutas absolutas: el panel funciona igual en /admin y en /admin/ -->
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+  <script src="/assets/js/config.js"></script>
+  <script type="module" src="/assets/js/admin.js"></script>
+</head>
+<body class="admin">
+
+  <!-- Login -->
+  <main id="vista-login" class="login" hidden>
+    <form class="login-caja" id="form-login" novalidate>
+      <p class="eyebrow">Panel de administración</p>
+      <h1 data-nombre-tienda>santalucia.parfums</h1>
+      <div class="aviso info" id="login-demo" hidden></div>
+      <label class="campo" id="campo-email">
+        <span>Email</span>
+        <input type="email" name="email" autocomplete="username" inputmode="email" required>
+      </label>
+      <label class="campo">
+        <span>Contraseña</span>
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <p class="error-form" id="login-error" role="alert"></p>
+      <button class="btn btn-bronce btn-ancho" type="submit">Entrar</button>
+      <a class="btn-texto volver" href="/">← Volver a la tienda</a>
+    </form>
+  </main>
+
+  <!-- Panel -->
+  <div id="vista-panel" hidden>
+    <header class="a-header">
+      <div class="a-header-in">
+        <div>
+          <p class="eyebrow">Panel</p>
+          <p class="a-marca" data-nombre-tienda>santalucia.parfums</p>
+        </div>
+        <div class="a-header-acciones">
+          <a class="btn btn-borde btn-sm" href="/" target="_blank" rel="noopener">Ver tienda</a>
+          <button class="btn btn-borde btn-sm" id="reiniciar-demo" type="button" hidden>Reiniciar demo</button>
+          <button class="btn btn-borde btn-sm" id="salir" type="button">Salir</button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="perfumes">Perfumes</button>
+        <button role="tab" aria-selected="false" data-tab="taxonomias">Categorías y familias</button>
+      </nav>
+    </header>
+
+    <main class="a-main">
+      <div id="avisos"></div>
+
+      <section id="tab-perfumes" role="tabpanel">
+        <div class="metricas" id="metricas"></div>
+        <div class="barra-herr">
+          <label class="buscador-a">
+            <span class="sr">Buscar</span>
+            <input type="search" id="a-buscar" placeholder="Buscar por nombre o marca">
+          </label>
+          <label class="select">
+            <span class="sr">Categoría</span>
+            <select id="a-categoria"><option value="">Todas las categorías</option></select>
+          </label>
+          <button class="btn btn-bronce" id="nuevo" type="button">+ Nuevo perfume</button>
+        </div>
+        <ul class="filas" id="filas" aria-live="polite"></ul>
+      </section>
+
+      <section id="tab-taxonomias" role="tabpanel" hidden>
+        <div class="taxo-grid">
+          <div class="taxo" data-tabla="categorias">
+            <h2>Categorías</h2>
+            <p class="ayuda">Son los chips de la tienda. El orden de esta lista es el orden en que se ven.</p>
+            <ul class="taxo-lista"></ul>
+            <form class="taxo-nuevo"><input name="nombre" placeholder="Nueva categoría" required maxlength="40"><button class="btn btn-bronce btn-sm">Agregar</button></form>
+          </div>
+          <div class="taxo" data-tabla="familias">
+            <h2>Familias olfativas</h2>
+            <p class="ayuda">Se usan en el selector “Familia” de la tienda.</p>
+            <ul class="taxo-lista"></ul>
+            <form class="taxo-nuevo"><input name="nombre" placeholder="Nueva familia" required maxlength="40"><button class="btn btn-bronce btn-sm">Agregar</button></form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Formulario de perfume -->
+  <dialog class="hoja" id="dlg-form" aria-labelledby="form-titulo">
+    <form class="hoja-caja" id="form-perfume" novalidate>
+      <div class="hoja-cabecera">
+        <button type="button" class="btn-icono" data-cerrar aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+        <h2 id="form-titulo">Nuevo perfume</h2>
+        <button class="btn btn-bronce btn-sm" type="submit">Guardar</button>
+      </div>
+      <div class="hoja-cuerpo">
+        <fieldset class="grupo">
+          <legend>Fotos</legend>
+          <div class="fotos" id="fotos"></div>
+          <label class="subir">
+            <input type="file" id="input-fotos" accept="image/*" multiple>
+            <span>+ Agregar fotos</span>
+          </label>
+          <small class="ayuda">La primera foto es la principal. Las fotos se achican solas antes de subir.</small>
+        </fieldset>
+
+        <fieldset class="grupo">
+          <legend>Datos</legend>
+          <div class="dos">
+            <label class="campo"><span>Nombre *</span><input name="nombre" required maxlength="80"></label>
+            <label class="campo"><span>Marca *</span><input name="marca" required maxlength="60"></label>
+          </div>
+          <div class="dos">
+            <label class="campo"><span>Categoría</span><select name="categoria"></select></label>
+            <label class="campo"><span>Familia olfativa</span><select name="familia"></select></label>
+          </div>
+          <div class="dos">
+            <label class="campo"><span>Concentración</span>
+              <select name="concentracion"><option value="">—</option><option>EDT</option><option>EDP</option><option>Elixir</option><option>Extracto</option></select>
+            </label>
+            <label class="campo"><span>Tipo</span>
+              <select name="tipo"><option>Sellado</option><option>Tester</option><option>Decant</option></select>
+            </label>
+          </div>
+          <label class="campo"><span>Descripción</span><textarea name="descripcion" rows="3" maxlength="600"></textarea></label>
+        </fieldset>
+
+        <fieldset class="grupo">
+          <legend>Precio y tamaños</legend>
+          <div class="dos">
+            <label class="campo"><span>Precio *</span><input name="precio" inputmode="numeric" required placeholder="39900"></label>
+            <label class="campo"><span>Precio anterior</span><input name="precio_anterior" inputmode="numeric" placeholder="Opcional (tachado)"></label>
+          </div>
+          <label class="campo"><span>Tamaños, separados por comas</span>
+            <input name="tamanios" placeholder="100 ml">
+            <small>Si cada tamaño tiene su precio: <code>50 ml: 29900, 100 ml: 39900</code></small>
+          </label>
+        </fieldset>
+
+        <fieldset class="grupo">
+          <legend>Notas (separadas por comas)</legend>
+          <label class="campo"><span>Salida</span><input name="notas_salida" placeholder="Bergamota, Mandarina"></label>
+          <label class="campo"><span>Corazón</span><input name="notas_corazon" placeholder="Jazmín, Rosa"></label>
+          <label class="campo"><span>Fondo</span><input name="notas_fondo" placeholder="Vainilla, Ámbar, Almizcle"></label>
+        </fieldset>
+
+        <fieldset class="grupo">
+          <legend>Rendimiento</legend>
+          <label class="campo"><span>Duración: <output id="out-duracion">8 h</output></span>
+            <input type="range" name="duracion_horas" min="0" max="16" step="0.5" value="8">
+          </label>
+          <div class="campo"><span id="lbl-estela">Estela (cuánto proyecta)</span>
+            <div class="estela-sel" role="radiogroup" aria-labelledby="lbl-estela">
+              <label><input type="radio" name="estela" value="1"><span>1</span></label>
+              <label><input type="radio" name="estela" value="2"><span>2</span></label>
+              <label><input type="radio" name="estela" value="3" checked><span>3</span></label>
+              <label><input type="radio" name="estela" value="4"><span>4</span></label>
+              <label><input type="radio" name="estela" value="5"><span>5</span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="grupo">
+          <legend>Publicación</legend>
+          <label class="campo"><span>Etiqueta</span>
+            <select name="etiqueta"><option value="">Sin etiqueta</option><option>Importado</option><option>Nuevo</option><option>Oferta</option><option>Más vendido</option></select>
+          </label>
+          <label class="switch"><input type="checkbox" name="stock" checked><span>Hay stock</span></label>
+          <label class="switch"><input type="checkbox" name="destacado"><span>Destacado</span></label>
+          <label class="switch"><input type="checkbox" name="activo" checked><span>Visible en la tienda</span></label>
+        </fieldset>
+        <p class="error-form" id="form-error" role="alert"></p>
+        <button class="btn btn-bronce btn-ancho" type="submit">Guardar perfume</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirmación -->
+  <dialog class="confirmar" id="dlg-confirmar">
+    <form method="dialog" class="confirmar-caja">
+      <h2 id="conf-titulo">¿Seguro?</h2>
+      <p id="conf-texto"></p>
+      <div class="confirmar-botones">
+        <button class="btn btn-borde" value="no">Cancelar</button>
+        <button class="btn btn-coral" value="si" id="conf-si">Borrar</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

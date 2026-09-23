@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>santalucia.parfums · Perfumes árabes, de diseñador y body splash</title>
+  <meta name="description" content="Perfumes árabes, de diseñador y body splash. Elegí tu fragancia, armá el pedido y lo cerramos por WhatsApp.">
+  <meta name="theme-color" content="#1B1420">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Vista previa al compartir (WhatsApp, Instagram, Facebook).
+       IMPORTANTE: reemplazá https://tu-tienda.vercel.app por tu dominio real.
+       og:image tiene que ser una URL ABSOLUTA; la imagen mide 1200x630. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="santalucia.parfums">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:url" content="https://tu-tienda.vercel.app/">
+  <meta property="og:title" content="santalucia.parfums · Perfumería">
+  <meta property="og:description" content="Perfumes árabes, de diseñador y body splash. Armá tu pedido y lo cerramos por WhatsApp.">
+  <meta property="og:image" content="https://tu-tienda.vercel.app/assets/img/og-image.jpg">
+  <meta property="og:image:secure_url" content="https://tu-tienda.vercel.app/assets/img/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Frascos de perfume iluminados sobre fondo berenjena">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="santalucia.parfums · Perfumería">
+  <meta name="twitter:image" content="https://tu-tienda.vercel.app/assets/img/og-image.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..600&family=Jost:wght@300..600&display=swap">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/tienda.css">
+  <script src="/assets/js/config.js"></script>
+  <script type="module" src="/assets/js/tienda.js"></script>
+</head>
+<body>
+  <a class="saltar" href="#catalogo">Ir al catálogo</a>
+
+  <div id="cartel-demo" class="cartel-demo" hidden>
+    Estás viendo productos de ejemplo. <a href="/admin/">Probá el panel</a>
+  </div>
+
+  <header class="header" id="header">
+    <div class="header-in">
+      <a class="marca-tienda" href="#inicio" data-nombre-tienda>santalucia.parfums</a>
+      <label class="buscador">
+        <span class="sr">Buscar perfumes</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="buscar" type="search" placeholder="Buscá por perfume, marca o nota" autocomplete="off" enterkeyhint="search">
+      </label>
+      <button class="btn-carrito" id="abrir-carrito" type="button" aria-label="Abrir carrito">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M5 8h14l-1 12.5a1 1 0 0 1-1 .9H7a1 1 0 0 1-1-.9L5 8Z"/><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg>
+        <span class="contador" id="contador" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="hero-texto">
+        <p class="eyebrow">Perfumería · Envíos a todo el país</p>
+        <h1>Fragancias que <em>se quedan</em> en la memoria</h1>
+        <p class="hero-sub">Perfumes árabes, de diseñador y body splash, originales y sellados. Elegí el tuyo y cerramos el pedido por WhatsApp.</p>
+        <a class="btn btn-bronce" href="#catalogo">Ver catálogo</a>
+      </div>
+      <div class="hero-vidriera" aria-hidden="true">
+        <img src="/assets/img/perfumes/lattafa-khamrah-1.svg" alt="" class="hv hv-1" width="800" height="1000">
+        <img src="/assets/img/perfumes/lattafa-yara-1.svg" alt="" class="hv hv-2" width="800" height="1000">
+        <img src="/assets/img/perfumes/armaf-odyssey-mandarin-sky-1.svg" alt="" class="hv hv-3" width="800" height="1000">
+      </div>
+    </section>
+
+    <section class="catalogo" id="catalogo" aria-labelledby="titulo-catalogo">
+      <div class="seccion-cabecera">
+        <p class="eyebrow">Catálogo</p>
+        <h2 id="titulo-catalogo">Elegí tu fragancia</h2>
+      </div>
+
+      <div class="filtros">
+        <div class="chips" id="chips" role="group" aria-label="Categorías"></div>
+        <div class="filtros-fila">
+          <label class="select">
+            <span class="sr">Familia olfativa</span>
+            <select id="familia"><option value="">Todas las familias</option></select>
+          </label>
+          <label class="select">
+            <span class="sr">Ordenar</span>
+            <select id="orden">
+              <option value="destacados">Destacados</option>
+              <option value="novedades">Novedades</option>
+              <option value="precio-asc">Menor precio</option>
+              <option value="precio-desc">Mayor precio</option>
+            </select>
+          </label>
+        </div>
+        <p class="resultados" id="resultados" aria-live="polite"></p>
+      </div>
+
+      <div class="grilla" id="grilla" aria-busy="true">
+        <div class="card esqueleto"></div><div class="card esqueleto"></div><div class="card esqueleto"></div><div class="card esqueleto"></div>
+      </div>
+    </section>
+
+    <section class="recomendacion reveal">
+      <p class="eyebrow">Asesoramiento</p>
+      <h2>¿No sabés cuál elegir?</h2>
+      <p>Contanos qué perfumes te gustan o para quién es el regalo y te recomendamos uno que vaya con esa persona.</p>
+      <a class="btn btn-wa" id="btn-recomendacion" href="#" target="_blank" rel="noopener"></a>
+    </section>
+
+    <section class="como-comprar" aria-labelledby="titulo-como">
+      <div class="seccion-cabecera">
+        <p class="eyebrow">Simple y seguro</p>
+        <h2 id="titulo-como">Cómo comprar</h2>
+      </div>
+      <ol class="pasos">
+        <li class="reveal"><span class="paso-n">1</span><h3>Elegí</h3><p>Filtrá por categoría o familia olfativa y agregá tus perfumes al carrito.</p></li>
+        <li class="reveal"><span class="paso-n">2</span><h3>Enviá</h3><p>Completá tu nombre y la forma de entrega. El pedido llega armado a nuestro WhatsApp.</p></li>
+        <li class="reveal"><span class="paso-n">3</span><h3>Recibí</h3><p>Coordinamos el pago y el envío, o pasás a retirarlo. Así de fácil.</p></li>
+      </ol>
+    </section>
+
+    <section class="faq" aria-labelledby="titulo-faq">
+      <div class="seccion-cabecera">
+        <p class="eyebrow">Dudas</p>
+        <h2 id="titulo-faq">Preguntas frecuentes</h2>
+      </div>
+      <div class="acordeon">
+        <details><summary>¿Hacen envíos?</summary><div><p data-zona-envio></p><p>El costo depende de la zona; te lo pasamos al confirmar el pedido.</p></div></details>
+        <details><summary>¿Qué medios de pago aceptan?</summary><div><p>Transferencia, Mercado Pago, efectivo al retirar y tarjeta de crédito en cuotas (con recargo según el plan). Te pasamos los datos por WhatsApp.</p></div></details>
+        <details><summary>¿Son originales?</summary><div><p>Sí. Todos los perfumes son 100% originales. Los árabes llegan importados de Emiratos y los de diseñador, sellados con su celofán de fábrica.</p></div></details>
+        <details><summary>¿Qué diferencia hay entre sellado, tester y decant?</summary><div>
+          <p><strong>Sellado:</strong> el perfume en su caja original, cerrado de fábrica.</p>
+          <p><strong>Tester:</strong> el mismo perfume que usan las perfumerías para probar; viene en caja blanca o sin caja, a veces sin tapa, y sale más barato.</p>
+          <p><strong>Decant:</strong> una muestra de 5 o 10 ml fraccionada del frasco original, ideal para probarlo varios días antes de comprar el frasco entero.</p>
+        </div></details>
+        <details><summary>¿Puedo cambiarlo?</summary><div><p>Tenés 7 días para cambiar perfumes sellados sin abrir. Por higiene, testers y decants no tienen cambio salvo falla.</p></div></details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-in">
+      <div>
+        <p class="footer-marca" data-nombre-tienda>santalucia.parfums</p>
+        <p class="footer-eslogan" data-eslogan></p>
+        <div class="redes" id="redes"></div>
+      </div>
+      <div><h3>Envíos</h3><p data-zona-envio></p></div>
+      <div><h3>Horarios</h3><p data-horarios></p></div>
+    </div>
+    <p class="footer-legal">© <span id="anio"></span> <span data-nombre-tienda>santalucia.parfums</span> · Pedidos por WhatsApp</p>
+  </footer>
+
+  <a class="wa-flotante" id="wa-flotante" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.97L2 22l5.17-1.5A9.93 9.93 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.07.9.92-3-.2-.31a8.2 8.2 0 1 1 6.85 3.74Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.53.06a6.7 6.7 0 0 1-3.34-2.92c-.25-.43.25-.4.72-1.34.08-.16.04-.3-.02-.43l-.76-1.830c-.2-.48-.4-.41-.56-.42h-.48a.92.92 0 0 0-.66.31 2.8 2.8 0 0 0-.87 2.070 4.84 4.84 0 0 0 1.02 2.57 11.1 11.1 0 0 0 4.25 3.75c1.58.68 2.2.74 2.99.62.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>
+  </a>
+
+  <!-- Detalle del perfume -->
+  <dialog class="modal" id="modal" aria-labelledby="modal-titulo">
+    <div class="modal-caja" id="modal-contenido"></div>
+  </dialog>
+
+  <!-- Carrito -->
+  <dialog class="cajon" id="carrito" aria-labelledby="carrito-titulo">
+    <div class="cajon-caja">
+      <div class="cajon-cabecera">
+        <h2 id="carrito-titulo">Tu pedido</h2>
+        <button type="button" class="btn-icono" data-cerrar aria-label="Cerrar carrito"><svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="cajon-cuerpo">
+        <div id="aviso-carrito" class="aviso" hidden></div>
+        <ul class="lineas" id="lineas"></ul>
+        <div class="carrito-vacio" id="carrito-vacio" hidden>
+          <p>Tu carrito está vacío.</p>
+          <button type="button" class="btn btn-borde" data-cerrar data-ir-catalogo>Ver catálogo</button>
+        </div>
+        <form class="checkout" id="checkout" novalidate>
+          <div class="total"><span>Total</span><strong id="total">$0</strong></div>
+          <label class="campo">
+            <span>Tu nombre</span>
+            <input name="nombre" id="cli-nombre" autocomplete="name" required placeholder="Nombre y apellido">
+          </label>
+          <fieldset class="campo entrega">
+            <legend>Entrega</legend>
+            <label class="opcion"><input type="radio" name="entrega" value="retiro" checked> <span>Retiro</span></label>
+            <label class="opcion"><input type="radio" name="entrega" value="envio"> <span>Envío</span></label>
+          </fieldset>
+          <p class="nota-retiro" id="nota-retiro"></p>
+          <label class="campo" id="campo-direccion" hidden>
+            <span>Dirección de envío</span>
+            <input name="direccion" id="cli-direccion" autocomplete="street-address" placeholder="Calle, número, piso, localidad">
+          </label>
+          <p class="error-form" id="error-checkout" role="alert"></p>
+          <a class="btn btn-wa btn-ancho" id="enviar-pedido" href="https://wa.me/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.97L2 22l5.17-1.5A9.93 9.93 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.07.9.92-3-.2-.31a8.2 8.2 0 1 1 6.85 3.74Z"/></svg>
+            Enviar pedido por WhatsApp
+          </a>
+          <button type="button" class="btn-texto" id="vaciar">Vaciar carrito</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

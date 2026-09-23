@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs><radialGradient id="bgb3" cx="50%" cy="36%" r="75%">
+      <stop offset="0" stop-color="#6B4A22"/><stop offset=".55" stop-color="#2A1F30"/><stop offset="1" stop-color="#1B1420"/></radialGradient>
+    <radialGradient id="spotb3" cx="50%" cy="0%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fadeb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="mfadeb3"><rect x="0" y="860" width="800" height="140" fill="url(#fadeb3)"/></mask>
+    <linearGradient id="liqgb3330" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6E3510"/><stop offset=".45" stop-color="#C9772C"/><stop offset="1" stop-color="#6E3510"/></linearGradient>
+    <linearGradient id="capgb3330" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8C6528"/><stop offset=".35" stop-color="#E7C27A"/><stop offset=".55" stop-color="#F5DFA8"/><stop offset="1" stop-color="#8C6528"/></linearGradient>
+    <clipPath id="clipgb3330"><path d="M224.7 592 H435.3 Q451.5 592 451.5 608.2 V863.8 Q451.5 880 435.3 880 H224.7 Q208.5 880 208.5 863.8 V608.2 Q208.5 592 224.7 592 Z"/></clipPath></defs>
+  <rect width="800" height="1000" fill="url(#bgb3)"/>
+  <rect width="800" height="1000" fill="url(#spotb3)"/>
+  <rect y="860" width="800" height="140" fill="#140E18" opacity=".55"/>
+  <g>
+    <rect x="440" y="360" width="250" height="520" fill="#5A2E14"/>
+    <rect x="690" y="370" width="36" height="510" fill="#3A1C0B"/>
+    <path d="M440 360 L476 350 H726 L690 360 Z" fill="#6E3A1C" opacity=".9"/>
+    <rect x="456" y="376" width="218" height="488" fill="none" stroke="#D9B06A" stroke-width="1.5" opacity=".7"/>
+    <g text-anchor="middle" fill="#EACB8C">
+      <text x="565" y="578.4" font-family="'Jost','Futura','Century Gothic','Segoe UI',sans-serif" font-size="17" letter-spacing="6">LATTAFA</text>
+      <text x="565" y="624.4" font-family="'Bodoni Moda','Bodoni 72',Didot,'Playfair Display',Georgia,serif" font-style="italic" font-size="36">Khamrah</text>
+      <text x="565" y="836" font-family="'Jost','Futura','Century Gothic','Segoe UI',sans-serif" font-size="13" letter-spacing="4" opacity=".8">EAU DE PARFUM</text>
+    </g></g>
+    <ellipse cx="330" cy="884" rx="150.66" ry="12.6" fill="#000" opacity=".45"/>
+    <rect x="294" y="573.8" width="72" height="20.2" fill="#d9c7a8" opacity=".85"/>
+    <path d="M253.5 575.8 L274.92 467.79999999999995 H385.08 L406.5 575.8 Z" fill="url(#capgb3330)"/>
+      <path d="M314.7 467.79999999999995 L305.52 575.8 M351.42 467.79999999999995 L360.6 575.8" stroke="#fff" stroke-opacity=".25" stroke-width="1.8"/>
+    <path d="M224.7 592 H435.3 Q451.5 592 451.5 608.2 V863.8 Q451.5 880 435.3 880 H224.7 Q208.5 880 208.5 863.8 V608.2 Q208.5 592 224.7 592 Z" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.35)" stroke-width="1.8"/>
+    <g clip-path="url(#clipgb3330)">
+      <rect x="188.5" y="626.56" width="283" height="263.44000000000005" fill="url(#liqgb3330)" opacity="0.92"/>
+      <rect x="188.5" y="626.56" width="283" height="2.7" fill="#fff" opacity=".35"/>
+      <rect x="230.37" y="602.8" width="17.01" height="266.4" rx="8.505" fill="#fff" opacity=".28"/>
+      <rect x="402.9" y="610" width="7.29" height="252" fill="#fff" opacity=".14"/>
+    </g>
+    <g clip-path="url(#clipgb3330)" opacity=".5">
+      <path d="M208.5 592 L252.24 626.56 V845.44 L208.5 880 Z" fill="#fff" opacity=".08"/>
+      <path d="M451.5 592 L407.76 626.56 V845.44 L451.5 880 Z" fill="#000" opacity=".25"/>
+      <path d="M252.24 626.56 H407.76 M252.24 845.44 H407.76" stroke="#fff" stroke-opacity=".3" stroke-width="1.35"/></g>
+    
+    <g font-family="'Jost','Futura','Century Gothic','Segoe UI',sans-serif" text-anchor="middle">
+      <text x="330" y="724.48" font-size="13.5" letter-spacing="4.5" fill="#F8E3B8" opacity=".9">LATTAFA</text>
+      <text x="330" y="780.37" font-family="'Bodoni Moda','Bodoni 72',Didot,'Playfair Display',Georgia,serif" font-style="italic" font-size="41.4" fill="#F8E3B8">Khamrah</text>
+      <text x="330" y="821.77" font-size="11.700000000000001" letter-spacing="3.6" fill="#F8E3B8" opacity=".75">EAU DE PARFUM</text>
+    </g>
+</svg>
