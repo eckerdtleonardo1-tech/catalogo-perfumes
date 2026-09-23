@@ -29,7 +29,7 @@ Para una demo de venta, poné `mostrarCartelDemo: false` en `config.js` y desapa
 
 ## 2. Personalizar
 
-En `assets/js/config.js`: nombre, WhatsApp, redes, zona de envío, horarios y dirección de retiro.
+En `assets/js/config.js`: nombre, WhatsApp, redes, puntos de encuentro, horarios y responsable.
 
 - **WhatsApp:** formato internacional, sólo números, sin `+` ni espacios. Argentina: `549` + área sin 0 + número sin 15.
   Ej: (011) 15 2345-6789 → `5491123456789`.
@@ -41,13 +41,21 @@ En `assets/js/config.js`: nombre, WhatsApp, redes, zona de envío, horarios y di
 ## 3. Conectar Supabase
 
 1. Creá un proyecto en supabase.com.
-2. **SQL Editor → New query**: pegá todo `supabase/schema.sql` y **Run**. Se puede volver a correr: no duplica nada.
-3. **Authentication → Users → Add user → Create new user**: tu email y contraseña, tildando *Auto Confirm User*.
-4. **⚠ Cerrá el registro público:** Authentication → Sign In / Providers → desactivá **Allow new users to sign up**.
-   Supabase lo trae abierto de fábrica y, abierto, cualquiera podría crearse una cuenta y editar tu catálogo.
-   El panel te muestra un cartel rojo mientras siga abierto.
+2. **Authentication → Users → Add user → Create new user**: el email y la contraseña del administrador,
+   tildando *Auto Confirm User*.
+3. **⚠ Cerrá el registro público:** Authentication → Sign In / Providers → desactivá **Allow new users to sign up**.
+   Supabase lo trae abierto de fábrica. El panel muestra un cartel rojo mientras siga abierto.
+4. **SQL Editor → New query**: pegá todo `supabase/schema.sql` y **Run**. Se puede volver a correr: no duplica nada.
+   La primera vez, los usuarios que ya existen quedan autorizados como administradores.
 5. **Project Settings → API**: copiá *Project URL* y la clave *anon public* en `config.js`
    (`supabaseUrl`, `supabaseAnonKey`). La clave anon es pública por diseño; **nunca** pongas la `service_role`.
+
+El catálogo arranca vacío y se carga desde `/admin`. Si querés los perfumes de ejemplo, corré también
+`supabase/ejemplos.sql`.
+
+**Administradores:** sólo los emails de la tabla `admins` pueden editar y subir fotos; tener usuario no alcanza.
+Para sumar otro: creá el usuario en Authentication y corré
+`insert into public.admins (email) values ('otro@email.com');`
 
 Con credenciales cargadas, el modo demo se apaga solo.
 

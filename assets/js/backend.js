@@ -137,6 +137,12 @@ function crearDemo() {
     async registroAbierto() {
       return false;
     },
+    async esAdmin() {
+      return true;
+    },
+    async emailSesion() {
+      return "";
+    },
     reiniciar() {
       memoria = null;
       ls.del(DEMO_KEY);
@@ -163,7 +169,9 @@ const ok = ({ data, error }) => {
 async function crearSupabase() {
   const tiempo = new Promise((_, mal) => setTimeout(() => mal(new Error("La librería de Supabase no respondió.")), 10000));
   const { createClient } = await Promise.race([import(SUPABASE_CDN), tiempo]);
-  const sb = createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+  // Acepta la URL con o sin "/rest/v1/" al final (así aparece en algunas pantallas de Supabase).
+  const url = CONFIG.supabaseUrl.trim().replace(/\/rest\/v1\/?$/, "").replace(/\/+$/, "");
+  const sb = createClient(url, CONFIG.supabaseAnonKey);
   const MARCA = "/storage/v1/object/public/perfumes/";
 
   return {
@@ -221,10 +229,20 @@ async function crearSupabase() {
     async logout() {
       await sb.auth.signOut();
     },
+    /** Sólo los emails cargados en la tabla "admins" pueden editar (ver schema.sql). */
+    async esAdmin() {
+      const { data, error } = await sb.rpc("es_admin");
+      if (error) throw traducir(error);
+      return data === true;
+    },
+    async emailSesion() {
+      const { data } = await sb.auth.getSession();
+      return data.session?.user?.email || "";
+    },
     /** Supabase trae el registro por email abierto de fábrica: lo detectamos. */
     async registroAbierto() {
       try {
-        const r = await fetch(`${CONFIG.supabaseUrl}/auth/v1/settings`, { headers: { apikey: CONFIG.supabaseAnonKey } });
+        const r = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: CONFIG.supabaseAnonKey } });
         const s = await r.json();
         return s.disable_signup === false && s.external?.email !== false;
       } catch {

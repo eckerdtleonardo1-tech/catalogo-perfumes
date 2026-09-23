@@ -29,13 +29,18 @@ const porId = (id) => st.perfumes.find((p) => String(p.id) === String(id));
 const nombreDe = (lista, id) => lista.find((x) => x.id === id)?.nombre || "";
 
 
+const puntos = () => (Array.isArray(CONFIG.puntosEncuentro) ? CONFIG.puntosEncuentro : []).filter(Boolean);
+/** ["A","B","C"] → "A, B o C" */
+const enumerar = (xs, y = "y") => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} ${y} ${xs.at(-1)}`);
+
 function aplicarConfig() {
   $$("[data-nombre-tienda]").forEach((el) => (el.textContent = CONFIG.nombre || "Perfumería"));
   $$("[data-eslogan]").forEach((el) => (el.textContent = CONFIG.eslogan || ""));
-  $$("[data-zona-envio]").forEach((el) => (el.textContent = CONFIG.zonaEnvio || ""));
+  $$("[data-puntos]").forEach((el) => (el.textContent = enumerar(puntos(), "o")));
+  $$("[data-responsable]").forEach((el) => (el.textContent = CONFIG.responsable ? ` · ${CONFIG.responsable}` : ""));
   $$("[data-horarios]").forEach((el) => (el.textContent = CONFIG.horarios || ""));
   $("#anio").textContent = new Date().getFullYear();
-  $("#nota-retiro").textContent = CONFIG.direccionRetiro ? `Retiro: ${CONFIG.direccionRetiro}` : "";
+  $("#puntos").insertAdjacentHTML("beforeend", puntos().map((p) => `<label class="opcion"><input type="radio" name="punto" value="${esc(p)}"> <span>${esc(p)}</span></label>`).join(""));
 
   const redes = [["instagram", "Instagram", ICONOS.ig], ["tiktok", "TikTok", ICONOS.tt], ["facebook", "Facebook", ICONOS.fb]];
   $("#redes").innerHTML = redes
@@ -142,6 +147,14 @@ function renderGrilla() {
   grilla.removeAttribute("aria-busy");
   $("#resultados").textContent = st.cargado ? plural(lista.length, "perfume", "perfumes") : "";
 
+  // Tienda recién abierta, todavía sin productos cargados.
+  if (!st.perfumes.length) {
+    $("#resultados").textContent = "";
+    grilla.innerHTML = `<div class="vacio"><h3>Estamos preparando el catálogo</h3>
+      <p>Muy pronto vas a ver acá todos nuestros perfumes. Mientras tanto, preguntanos por WhatsApp.</p>
+      <div class="acciones"><a class="btn btn-wa" target="_blank" rel="noopener" href="${waLink("Hola! Quería consultar qué perfumes tienen disponibles.")}">${ICONOS.wa} Consultar</a></div></div>`;
+    return;
+  }
   if (!lista.length) {
     const hayQ = st.q.trim();
     grilla.innerHTML = `<div class="vacio"><h3>${hayQ ? `Sin resultados para “${esc(hayQ)}”` : "No hay perfumes con estos filtros"}</h3>
@@ -404,7 +417,7 @@ function renderCarrito() {
   $("#total").textContent = precio(lineas.reduce((s, l) => s + l.subtotal, 0));
 }
 
-function mensajePedido({ nombre, entrega, direccion }) {
+function mensajePedido({ nombre, punto }) {
   const lineas = lineasDetalladas();
   const total = lineas.reduce((s, l) => s + l.subtotal, 0);
   const detalle = lineas.map((l) => {
@@ -416,7 +429,7 @@ function mensajePedido({ nombre, entrega, direccion }) {
     ...detalle,
     `Total: ${precio(total)}`,
     `Nombre: ${nombre}`,
-    `Entrega: ${entrega === "envio" ? `Envío a ${direccion}` : "Retiro en el local"}`
+    `Entrega: punto de encuentro en ${punto}`
   ].join("\n");
 }
 
@@ -425,13 +438,7 @@ function enlazarCarrito() {
   const form = $("#checkout");
   const cli = ls.get(CLIENTE_KEY, {});
   if (cli.nombre) form.nombre.value = cli.nombre;
-  if (cli.direccion) form.direccion.value = cli.direccion;
-  if (cli.entrega === "envio") form.entrega.value = "envio";
-  const syncEntrega = () => {
-    $("#campo-direccion").hidden = form.entrega.value !== "envio";
-    $("#nota-retiro").hidden = form.entrega.value !== "retiro" || !CONFIG.direccionRetiro;
-  };
-  syncEntrega();
+  if (cli.punto && puntos().includes(cli.punto)) form.punto.value = cli.punto;
 
   $("#abrir-carrito").addEventListener("click", () => {
     renderCarrito();
@@ -457,10 +464,9 @@ function enlazarCarrito() {
   });
   dlg.addEventListener("close", () => ($("#aviso-carrito").hidden = true));
 
-  form.addEventListener("change", syncEntrega);
   // El envío es un enlace real (no window.open): funciona en cualquier navegador
   // y en las vistas embebidas que bloquean ventanas emergentes.
-  const datosCliente = () => ({ nombre: form.nombre.value.trim(), entrega: form.entrega.value, direccion: form.direccion.value.trim() });
+  const datosCliente = () => ({ nombre: form.nombre.value.trim(), punto: form.punto?.value || "" });
   function validar(datos) {
     const error = $("#error-checkout");
     error.textContent = "";
@@ -469,9 +475,9 @@ function enlazarCarrito() {
       form.nombre.focus();
       return false;
     }
-    if (datos.entrega === "envio" && !datos.direccion) {
-      error.textContent = "Completá la dirección de envío.";
-      form.direccion.focus();
+    if (puntos().length && !datos.punto) {
+      error.textContent = "Elegí dónde te queda mejor encontrarnos.";
+      $("#puntos input")?.focus();
       return false;
     }
     return lineasDetalladas().length > 0;

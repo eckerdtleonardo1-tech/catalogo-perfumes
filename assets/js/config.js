@@ -15,8 +15,9 @@ window.TIENDA_CONFIG = {
 
   // Supabase. Si quedan vacíos, la tienda y el panel funcionan en MODO DEMO
   // (con los perfumes de ejemplo, guardando los cambios en el navegador).
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://lkhnmghcylqngdnsdylr.supabase.co",
+  // Clave pública ("anon"): puede estar en el código. NUNCA pongas acá la service_role.
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxraG5tZ2hjeWxxbmdkbnNkeWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxNzgyMTcsImV4cCI6MjEwNTc1NDIxN30.j2_Bz2sdzAvntNWRfa277iiklnUye_rlCYgWxYrsLAM",
 
   // Modo demo
   demoPassword: "demo1234",
@@ -28,7 +29,8 @@ window.TIENDA_CONFIG = {
   instagram: "https://instagram.com/santalucia.parfums",
   tiktok: "",
   facebook: "",
-  zonaEnvio: "Envíos a todo el país por correo.",
-  horarios: "Lunes a viernes de 10 a 19 h · Sábados de 10 a 14 h",
-  direccionRetiro: "Te pasamos la dirección por WhatsApp"
+  // Entregas: no hay envíos, se coordina un punto de encuentro por WhatsApp.
+  puntosEncuentro: ["Santa Lucía", "Doyle", "San Pedro"],
+  horarios: "Coordinamos día y horario por WhatsApp",
+  responsable: "Maximiliano Abraham"
 };

@@ -1,17 +1,16 @@
 -- =============================================================================
 --  CATÁLOGO DE PERFUMES · Supabase
---  Pegá TODO este archivo en Supabase → SQL Editor → New query → Run.
 --  Se puede volver a correr sin problemas: no duplica tablas, políticas ni datos.
 --
---  DESPUÉS DE CORRERLO:
---   1) Authentication → Users → "Add user" → "Create new user": tu email y una
---      contraseña (tildá "Auto Confirm User"). Ese es el login del panel /admin.
+--  ORDEN RECOMENDADO:
+--   1) Authentication → Users → "Add user" → "Create new user": el email y la
+--      contraseña del administrador (tildá "Auto Confirm User").
 --   2) ⚠ CERRÁ EL REGISTRO PÚBLICO. Supabase lo trae ABIERTO de fábrica:
 --      Authentication → Sign In / Providers → desactivá "Allow new users to sign up".
---      Si queda abierto, cualquiera puede crearse una cuenta y editar tu catálogo
---      (el panel te muestra un cartel rojo mientras siga abierto).
---   3) Project Settings → API: copiá "Project URL" y la clave "anon public" en
---      assets/js/config.js (supabaseUrl y supabaseAnonKey).
+--   3) SQL Editor → New query → pegá TODO este archivo → Run.
+--      La primera vez, los usuarios que ya existan quedan autorizados como
+--      administradores. Para sumar otro más adelante:
+--        insert into public.admins (email) values ('otro@email.com');
 -- =============================================================================
 
 
@@ -58,6 +57,37 @@ create index if not exists perfumes_categoria_idx on public.perfumes (categoria)
 create index if not exists perfumes_familia_idx on public.perfumes (familia);
 
 
+-- ---------------------------------------------------------------- Administradores
+-- Sólo los emails de esta tabla pueden editar el catálogo y subir fotos.
+-- Tener usuario en Supabase no alcanza: así, aunque alguien lograra crearse una
+-- cuenta, no podría tocar nada.
+create table if not exists public.admins (
+  email text primary key
+);
+alter table public.admins enable row level security; -- sin políticas: nadie la lee desde la web
+
+create or replace function public.es_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admins
+    where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+  );
+$$;
+revoke all on function public.es_admin() from public;
+grant execute on function public.es_admin() to anon, authenticated;
+
+-- Primera vez: autoriza a los usuarios que ya creaste en Authentication → Users.
+insert into public.admins (email)
+select lower(u.email) from auth.users u
+where u.email is not null and not exists (select 1 from public.admins)
+on conflict do nothing;
+
+
 -- ---------------------------------------------------------------- Permisos (GRANT)
 -- Las políticas RLS solas no alcanzan: sin estos GRANT todo devuelve
 -- "permission denied for table ...".
@@ -78,24 +108,24 @@ drop policy if exists "perfumes_lectura_publica" on public.perfumes;
 create policy "perfumes_lectura_publica" on public.perfumes
   for select to anon, authenticated using (activo = true);
 
--- Con sesión iniciada (panel) se ven también los inactivos.
+-- El administrador ve también los inactivos y es el único que escribe.
 drop policy if exists "perfumes_admin_lee_todo" on public.perfumes;
 create policy "perfumes_admin_lee_todo" on public.perfumes
-  for select to authenticated using (true);
+  for select to authenticated using (public.es_admin());
 
 drop policy if exists "perfumes_admin_crea" on public.perfumes;
 create policy "perfumes_admin_crea" on public.perfumes
-  for insert to authenticated with check (true);
+  for insert to authenticated with check (public.es_admin());
 
 drop policy if exists "perfumes_admin_edita" on public.perfumes;
 create policy "perfumes_admin_edita" on public.perfumes
-  for update to authenticated using (true) with check (true);
+  for update to authenticated using (public.es_admin()) with check (public.es_admin());
 
 drop policy if exists "perfumes_admin_borra" on public.perfumes;
 create policy "perfumes_admin_borra" on public.perfumes
-  for delete to authenticated using (true);
+  for delete to authenticated using (public.es_admin());
 
--- Categorías y familias: lectura pública, escritura con sesión.
+-- Categorías y familias: lectura pública, escritura sólo del administrador.
 do $$
 declare t text;
 begin
@@ -103,7 +133,7 @@ begin
     execute format('drop policy if exists %I on public.%I', t || '_lectura_publica', t);
     execute format('create policy %I on public.%I for select to anon, authenticated using (true)', t || '_lectura_publica', t);
     execute format('drop policy if exists %I on public.%I', t || '_admin_escribe', t);
-    execute format('create policy %I on public.%I for all to authenticated using (true) with check (true)', t || '_admin_escribe', t);
+    execute format('create policy %I on public.%I for all to authenticated using (public.es_admin()) with check (public.es_admin())', t || '_admin_escribe', t);
   end loop;
 end $$;
 
@@ -120,20 +150,21 @@ create policy "perfumes_fotos_lectura" on storage.objects
 
 drop policy if exists "perfumes_fotos_subir" on storage.objects;
 create policy "perfumes_fotos_subir" on storage.objects
-  for insert to authenticated with check (bucket_id = 'perfumes');
+  for insert to authenticated with check (bucket_id = 'perfumes' and public.es_admin());
 
 drop policy if exists "perfumes_fotos_editar" on storage.objects;
 create policy "perfumes_fotos_editar" on storage.objects
-  for update to authenticated using (bucket_id = 'perfumes') with check (bucket_id = 'perfumes');
+  for update to authenticated using (bucket_id = 'perfumes' and public.es_admin()) with check (bucket_id = 'perfumes' and public.es_admin());
 
 drop policy if exists "perfumes_fotos_borrar" on storage.objects;
 create policy "perfumes_fotos_borrar" on storage.objects
-  for delete to authenticated using (bucket_id = 'perfumes');
+  for delete to authenticated using (bucket_id = 'perfumes' and public.es_admin());
 
 
 -- ---------------------------------------------------------------- Datos iniciales
--- Cada bloque se carga SÓLO si la tabla está vacía: volver a correr el script
--- no duplica el catálogo ni pisa lo que cargaste desde el panel.
+-- Sólo si la tabla está vacía: volver a correr el script no duplica nada ni pisa
+-- lo que cargaste desde el panel. El catálogo arranca vacío y se carga desde /admin
+-- (hay perfumes de ejemplo opcionales en supabase/ejemplos.sql).
 insert into public.categorias (nombre, orden)
 select v.nombre, v.orden
 from (values ('Árabes', 1), ('Femeninos', 2), ('Masculinos', 3), ('Unisex', 4), ('Body splash', 5)) as v(nombre, orden)
@@ -143,23 +174,3 @@ insert into public.familias (nombre, orden)
 select v.nombre, v.orden
 from (values ('Oriental', 1), ('Floral', 2), ('Cítrico', 3), ('Gourmand', 4), ('Amaderado', 5), ('Acuático', 6)) as v(nombre, orden)
 where not exists (select 1 from public.familias);
-
--- 6 perfumes de ejemplo. Las fotos apuntan a /assets/img/perfumes/ del sitio.
-insert into public.perfumes
-  (nombre, marca, categoria, familia, concentracion, notas, precio, precio_anterior, descripcion,
-   imagenes, tamanios, tipo, duracion_horas, estela, stock, etiqueta, destacado, activo, fecha_creacion)
-select
-  v.nombre, v.marca,
-  (select c.id from public.categorias c where c.nombre = v.cat),
-  (select f.id from public.familias f where f.nombre = v.fam),
-  v.concentracion, v.notas, v.precio, v.precio_anterior, v.descripcion,
-  v.imagenes, v.tamanios, v.tipo, v.duracion_horas, v.estela, v.stock, v.etiqueta, v.destacado, v.activo, v.fecha
-from (values
-  ('Liquid Brun', 'French Avenue', 'Masculinos', 'Oriental', 'EDP', '{"salida":["Canela","Cardamomo","Azahar","Bergamota"],"corazon":["Vainilla bourbon","Praliné","Elemí"],"fondo":["Almizcle","Guayaco","Ámbar"]}'::jsonb, 38900, null::numeric, 'Cálido, especiado y envolvente. La canela y el praliné sobre un fondo de maderas y ámbar lo vuelven ideal para la noche.', array['/assets/img/perfumes/french-avenue-liquid-brun.jpg']::text[], array['100 ml']::text[], 'Sellado', 9, 4, true, 'Nuevo', true, true, '2026-09-15T15:00:00.000Z'::timestamptz),
-  ('Eclaire', 'Lattafa', 'Femeninos', 'Gourmand', 'EDP', '{"salida":["Caramelo","Leche","Azúcar"],"corazon":["Miel","Flores blancas"],"fondo":["Vainilla","Praliné","Almizcle"]}'::jsonb, 42900, null::numeric, 'Un postre en frasco: caramelo, leche y miel sobre vainilla. Dulce y cremoso. También lo tenemos en decant para probarlo.', array['/assets/img/perfumes/lattafa-eclaire.jpg']::text[], array['Decant 10 ml: 9900', '100 ml: 42900']::text[], 'Sellado', 8, 4, true, null, true, true, '2026-09-05T15:00:00.000Z'::timestamptz),
-  ('Yara', 'Lattafa', 'Femeninos', 'Gourmand', 'EDP', '{"salida":["Orquídea","Heliotropo","Mandarina"],"corazon":["Acorde gourmand","Frutas tropicales"],"fondo":["Vainilla","Almizcle","Sándalo"]}'::jsonb, 39900, null::numeric, 'Dulce, cremoso y muy femenino. La vainilla y las frutas tropicales lo vuelven adictivo: es el árabe que más nos piden para regalar.', array['/assets/img/perfumes/lattafa-yara.jpg']::text[], array['100 ml']::text[], 'Sellado', 8, 4, true, 'Más vendido', true, true, '2026-08-02T15:00:00.000Z'::timestamptz),
-  ('Khamrah', 'Lattafa', 'Unisex', 'Oriental', 'EDP', '{"salida":["Canela","Nuez moscada","Bergamota"],"corazon":["Dátiles","Praliné","Nardos"],"fondo":["Vainilla","Haba tonka","Benjuí"]}'::jsonb, 45900, 52900, 'Especiado, licoroso y cálido. Dátiles, canela y praliné en un perfume que se siente de lujo y dura todo el día.', array['/assets/img/perfumes/lattafa-khamrah.jpg']::text[], array['100 ml']::text[], 'Sellado', 10, 5, true, 'Oferta', false, true, '2026-07-20T15:00:00.000Z'::timestamptz),
-  ('Ajwad', 'Lattafa', 'Unisex', 'Floral', 'EDP', '{"salida":["Pistacho","Bergamota"],"corazon":["Rosa","Jazmín"],"fondo":["Vainilla","Almizcle","Sándalo"]}'::jsonb, 34900, null::numeric, 'Frutal y floral con un fondo suave de vainilla. Viene en su caja de colección, ideal para regalar.', array['/assets/img/perfumes/lattafa-ajwad.jpg']::text[], array['60 ml']::text[], 'Sellado', 7, 3, false, 'Importado', false, true, '2026-06-15T15:00:00.000Z'::timestamptz)
-) as v(nombre, marca, cat, fam, concentracion, notas, precio, precio_anterior, descripcion,
-       imagenes, tamanios, tipo, duracion_horas, estela, stock, etiqueta, destacado, activo, fecha)
-where not exists (select 1 from public.perfumes);

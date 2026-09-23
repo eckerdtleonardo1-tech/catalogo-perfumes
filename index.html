@@ -60,9 +60,9 @@
   <main id="inicio">
     <section class="hero">
       <div class="hero-texto">
-        <p class="eyebrow">Perfumería · Envíos a todo el país</p>
+        <p class="eyebrow">Perfumería · Santa Lucía · Doyle · San Pedro</p>
         <h1>Fragancias que <em>se quedan</em> en la memoria</h1>
-        <p class="hero-sub">Perfumes árabes, de diseñador y body splash, originales y sellados. Elegí el tuyo y cerramos el pedido por WhatsApp.</p>
+        <p class="hero-sub">Perfumes árabes, de diseñador y body splash. Elegí el tuyo, armá el pedido y coordinamos la entrega por WhatsApp.</p>
         <a class="btn btn-bronce" href="#catalogo">Ver catálogo</a>
       </div>
       <div class="hero-vidriera" aria-hidden="true">
@@ -117,8 +117,8 @@
       </div>
       <ol class="pasos">
         <li class="reveal"><span class="paso-n">1</span><h3>Elegí</h3><p>Filtrá por categoría o familia olfativa y agregá tus perfumes al carrito.</p></li>
-        <li class="reveal"><span class="paso-n">2</span><h3>Enviá</h3><p>Completá tu nombre y la forma de entrega. El pedido llega armado a nuestro WhatsApp.</p></li>
-        <li class="reveal"><span class="paso-n">3</span><h3>Recibí</h3><p>Coordinamos el pago y el envío, o pasás a retirarlo. Así de fácil.</p></li>
+        <li class="reveal"><span class="paso-n">2</span><h3>Enviá</h3><p>Completá tu nombre y elegí el punto de encuentro. El pedido llega armado a nuestro WhatsApp.</p></li>
+        <li class="reveal"><span class="paso-n">3</span><h3>Recibí</h3><p>Coordinamos el pago, el día y el lugar, y te lo entregamos en mano.</p></li>
       </ol>
     </section>
 
@@ -128,15 +128,15 @@
         <h2 id="titulo-faq">Preguntas frecuentes</h2>
       </div>
       <div class="acordeon">
-        <details><summary>¿Hacen envíos?</summary><div><p data-zona-envio></p><p>El costo depende de la zona; te lo pasamos al confirmar el pedido.</p></div></details>
-        <details><summary>¿Qué medios de pago aceptan?</summary><div><p>Transferencia, Mercado Pago, efectivo al retirar y tarjeta de crédito en cuotas (con recargo según el plan). Te pasamos los datos por WhatsApp.</p></div></details>
-        <details><summary>¿Son originales?</summary><div><p>Sí. Todos los perfumes son 100% originales. Los árabes llegan importados de Emiratos y los de diseñador, sellados con su celofán de fábrica.</p></div></details>
+        <details><summary>¿Cómo es la entrega?</summary><div><p>No hacemos envíos: la entrega es en mano, en un punto de encuentro en <span data-puntos></span>.</p><p>El día y el horario los coordinamos por WhatsApp cuando confirmás el pedido.</p></div></details>
+        <details><summary>¿Qué medios de pago aceptan?</summary><div><p>Te pasamos los medios de pago disponibles por WhatsApp cuando confirmás el pedido.</p></div></details>
+        <details><summary>¿Son originales?</summary><div><p>Sí, todos nuestros perfumes son originales. Si tenés alguna duda sobre un producto, consultanos por WhatsApp antes de comprar.</p></div></details>
         <details><summary>¿Qué diferencia hay entre sellado, tester y decant?</summary><div>
           <p><strong>Sellado:</strong> el perfume en su caja original, cerrado de fábrica.</p>
           <p><strong>Tester:</strong> el mismo perfume que usan las perfumerías para probar; viene en caja blanca o sin caja, a veces sin tapa, y sale más barato.</p>
           <p><strong>Decant:</strong> una muestra de 5 o 10 ml fraccionada del frasco original, ideal para probarlo varios días antes de comprar el frasco entero.</p>
         </div></details>
-        <details><summary>¿Puedo cambiarlo?</summary><div><p>Tenés 7 días para cambiar perfumes sellados sin abrir. Por higiene, testers y decants no tienen cambio salvo falla.</p></div></details>
+        <details><summary>¿Puedo cambiarlo?</summary><div><p>Los cambios se coordinan por WhatsApp. Por higiene, testers y decants no tienen cambio salvo falla.</p></div></details>
       </div>
     </section>
   </main>
@@ -148,10 +148,10 @@
         <p class="footer-eslogan" data-eslogan></p>
         <div class="redes" id="redes"></div>
       </div>
-      <div><h3>Envíos</h3><p data-zona-envio></p></div>
+      <div><h3>Entregas</h3><p>En mano, en <span data-puntos></span>.</p></div>
       <div><h3>Horarios</h3><p data-horarios></p></div>
     </div>
-    <p class="footer-legal">© <span id="anio"></span> <span data-nombre-tienda>santalucia.parfums</span> · Pedidos por WhatsApp</p>
+    <p class="footer-legal">© <span id="anio"></span> <span data-nombre-tienda>santalucia.parfums</span> <span data-responsable></span> · Pedidos por WhatsApp</p>
   </footer>
 
   <a class="wa-flotante" id="wa-flotante" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
@@ -183,16 +183,10 @@
             <span>Tu nombre</span>
             <input name="nombre" id="cli-nombre" autocomplete="name" required placeholder="Nombre y apellido">
           </label>
-          <fieldset class="campo entrega">
-            <legend>Entrega</legend>
-            <label class="opcion"><input type="radio" name="entrega" value="retiro" checked> <span>Retiro</span></label>
-            <label class="opcion"><input type="radio" name="entrega" value="envio"> <span>Envío</span></label>
+          <fieldset class="campo entrega" id="puntos">
+            <legend>Punto de encuentro</legend>
           </fieldset>
-          <p class="nota-retiro" id="nota-retiro"></p>
-          <label class="campo" id="campo-direccion" hidden>
-            <span>Dirección de envío</span>
-            <input name="direccion" id="cli-direccion" autocomplete="street-address" placeholder="Calle, número, piso, localidad">
-          </label>
+          <p class="nota-retiro">No hacemos envíos: el día y el horario los coordinamos por WhatsApp.</p>
           <p class="error-form" id="error-checkout" role="alert"></p>
           <a class="btn btn-wa btn-ancho" id="enviar-pedido" href="https://wa.me/" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" aria-hidden="true" class="ico"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 14.97L2 22l5.17-1.5A9.93 9.93 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.07.9.92-3-.2-.31a8.2 8.2 0 1 1 6.85 3.74Z"/></svg>

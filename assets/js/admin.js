@@ -54,6 +54,20 @@ $("#form-login").addEventListener("submit", async (e) => {
 });
 
 async function entrar() {
+  // Tener usuario no alcanza: el email tiene que estar en la tabla "admins".
+  let autorizado = false;
+  try {
+    autorizado = await st.be.esAdmin();
+  } catch (ex) {
+    console.warn(ex);
+  }
+  if (!autorizado) {
+    const email = await st.be.emailSesion();
+    await st.be.logout();
+    mostrarLogin();
+    $("#login-error").textContent = `${email || "Este usuario"} no está autorizado para usar el panel. En Supabase → SQL Editor corré: insert into public.admins (email) values ('${email || "tu@email.com"}');`;
+    return;
+  }
   $("#vista-login").hidden = true;
   $("#vista-panel").hidden = false;
   $("#reiniciar-demo").hidden = !MODO_DEMO;
