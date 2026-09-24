@@ -169,6 +169,7 @@ function renderFilas() {
         <button class="pill dest" data-toggle="destacado" aria-pressed="${!!p.destacado}" aria-label="Destacado">${ICONOS.estrella}${p.destacado ? "Destacado" : "Destacar"}</button>
         <span class="sep"></span>
         <button class="btn btn-borde" data-editar>Editar</button>
+        <button class="btn btn-borde" data-duplicar aria-label="Duplicar ${esc(p.nombre)}">Duplicar</button>
         <button class="btn btn-borde borrar" data-borrar aria-label="Borrar ${esc(p.nombre)}">Borrar</button>
       </div>
     </li>`)
@@ -207,12 +208,13 @@ $("#filas").addEventListener("click", async (e) => {
     return;
   }
   if (e.target.closest("[data-editar]")) return abrirForm(p);
+  if (e.target.closest("[data-duplicar]")) return abrirForm(p, true);
   if (e.target.closest("[data-borrar]")) {
     const ok = await confirmar(`¿Borrar ${p.nombre}?`, `Se borra el perfume y ${plural(p.imagenes?.length || 0, "foto", "fotos")}. No se puede deshacer. Si sólo querés sacarlo de la tienda, usá “Oculto”.`, "Borrar");
     if (!ok) return;
     try {
       await st.be.borrarPerfume(p.id);
-      await st.be.borrarImagenes(p.imagenes || []).catch((ex) => console.warn("No se pudieron borrar algunas fotos:", ex));
+      await st.be.borrarImagenes(sinUso(p.imagenes || [], p)).catch((ex) => console.warn("No se pudieron borrar algunas fotos:", ex));
       st.perfumes = st.perfumes.filter((x) => x !== p);
       renderMetricas();
       renderFilas();
@@ -232,17 +234,21 @@ function opciones(lista, valor) {
   return '<option value="">—</option>' + lista.map((x) => `<option value="${x.id}" ${x.id === valor ? "selected" : ""}>${esc(x.nombre)}</option>`).join("");
 }
 
-function abrirForm(p) {
-  st.editando = p;
+/** Fotos que ningún otro perfume usa (un duplicado comparte las fotos del original). */
+const sinUso = (urls, excepto) => urls.filter((u) => !st.perfumes.some((x) => x !== excepto && x.imagenes?.includes(u)));
+
+/** p = perfume a editar; con duplicar=true, arranca un perfume NUEVO con sus datos. */
+function abrirForm(p, duplicar = false) {
+  st.editando = duplicar ? null : p;
   st.quitadas = [];
   st.fotos = (p?.imagenes || []).map((url) => ({ url, preview: url }));
   form.reset();
   $("#form-error").textContent = "";
-  $("#form-titulo").textContent = p ? `Editar ${p.nombre}` : "Nuevo perfume";
+  $("#form-titulo").textContent = duplicar ? `Duplicar ${p.nombre}` : p ? `Editar ${p.nombre}` : "Nuevo perfume";
   form.categoria.innerHTML = opciones(st.categorias, p?.categoria ?? null);
   form.familia.innerHTML = opciones(st.familias, p?.familia ?? null);
   const v = p || { tipo: "Sellado", stock: true, activo: true, destacado: false, duracion_horas: 8, estela: 3, tamanios: ["100 ml"], concentracion: "EDP" };
-  form.nombre.value = v.nombre || "";
+  form.nombre.value = duplicar ? `${v.nombre} (copia)` : v.nombre || "";
   form.marca.value = v.marca || "";
   form.concentracion.value = v.concentracion || "";
   form.tipo.value = v.tipo || "Sellado";
@@ -299,7 +305,7 @@ $("#input-fotos").addEventListener("change", async (e) => {
   for (const file of files) {
     if (!file.type.startsWith("image/")) continue;
     try {
-      const blob = await achicar(file, MODO_DEMO ? 900 : 1600);
+      const blob = await achicar(file, MODO_DEMO ? 720 : 1200);
       st.fotos.push({ blob, preview: URL.createObjectURL(blob) });
     } catch (ex) {
       console.warn(ex);
@@ -310,7 +316,13 @@ $("#input-fotos").addEventListener("change", async (e) => {
 });
 
 /** Achica la foto del celular (4–8 MB) a algo liviano antes de subirla. */
-async function achicar(file, max) {
+/**
+ * Prepara la foto del celular para la tienda: la lleva al formato de la tarjeta
+ * (4:5) sin cortar el frasco y la achica para que pese poco.
+ * - Si ya viene casi en 4:5, se recorta apenas.
+ * - Si no, va entera al centro y el resto se rellena con la misma foto desenfocada.
+ */
+async function achicar(file, ancho) {
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise((ok, mal) => {
@@ -319,11 +331,35 @@ async function achicar(file, max) {
       i.onerror = () => mal(new Error("Formato de imagen no soportado"));
       i.src = url;
     });
-    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const W = ancho, H = Math.round(ancho * 1.25);
     const c = document.createElement("canvas");
-    c.width = Math.round(img.naturalWidth * k);
-    c.height = Math.round(img.naturalHeight * k);
-    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    c.width = W;
+    c.height = H;
+    const x = c.getContext("2d");
+    x.imageSmoothingQuality = "high";
+    const cubrir = Math.max(W / iw, H / ih);
+
+    if (Math.abs(iw / ih / 0.8 - 1) < 0.06) {
+      x.drawImage(img, (W - iw * cubrir) / 2, (H - ih * cubrir) / 2, iw * cubrir, ih * cubrir);
+    } else {
+      // Fondo desenfocado: se achica a una miniatura y se vuelve a agrandar
+      // (funciona en todos los celulares, incluso donde no existe ctx.filter).
+      const mini = document.createElement("canvas");
+      mini.width = 24;
+      mini.height = 30;
+      const mx = mini.getContext("2d");
+      const km = Math.max(24 / iw, 30 / ih) * 1.15;
+      mx.drawImage(img, (24 - iw * km) / 2, (30 - ih * km) / 2, iw * km, ih * km);
+      x.drawImage(mini, 0, 0, W, H);
+      x.fillStyle = "rgba(20, 12, 18, .45)";
+      x.fillRect(0, 0, W, H);
+      const k = Math.min(W / iw, H / ih);
+      const w = iw * k, h = ih * k;
+      x.shadowColor = "rgba(0, 0, 0, .5)";
+      x.shadowBlur = W * 0.05;
+      x.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+    }
     const tipo = MODO_DEMO ? "image/jpeg" : "image/webp";
     let blob = await new Promise((ok) => c.toBlob(ok, tipo, MODO_DEMO ? 0.78 : 0.85));
     if (!blob || blob.type !== tipo) blob = await new Promise((ok) => c.toBlob(ok, "image/jpeg", 0.82));
@@ -382,7 +418,7 @@ form.addEventListener("submit", async (e) => {
     datos.imagenes = st.fotos.map((f) => f.url);
     const guardado = await st.be.guardarPerfume(datos);
     // Recién con el perfume guardado borramos del Storage las fotos que se quitaron.
-    await st.be.borrarImagenes(st.quitadas).catch((ex) => console.warn(ex));
+    await st.be.borrarImagenes(sinUso(st.quitadas, st.editando)).catch((ex) => console.warn(ex));
     if (st.editando) Object.assign(st.editando, guardado);
     else st.perfumes.unshift(guardado);
     dlgForm.close();

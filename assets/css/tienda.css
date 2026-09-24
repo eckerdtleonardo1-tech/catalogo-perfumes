@@ -377,3 +377,9 @@ dialog::backdrop { background: rgba(10, 6, 12, .72); backdrop-filter: blur(3px);
 .opcion input:focus-visible + span { outline: 2px solid var(--bronce-claro); }
 .nota-retiro { color: var(--muted); font-size: .85rem; margin: -.4rem 0 1rem; }
 .checkout .btn-texto { display: block; margin: .6rem auto 0; }
+
+/* Logo */
+.marca-tienda { display: inline-flex; align-items: center; min-height: 44px; }
+.marca-tienda .logo { height: 30px; width: auto; }
+@media (min-width: 760px) { .marca-tienda .logo { height: 36px; } }
+.footer-marca .logo { width: min(260px, 70vw); height: auto; margin-bottom: .2rem; }
